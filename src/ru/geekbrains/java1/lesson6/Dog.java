@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson6;
+package ru.geekbrains.java1.lesson6;
 
 public class Dog extends Animal {
     private static final int runLength = 500;

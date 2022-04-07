@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson2;
+package ru.geekbrains.java1.lesson2;
 
 public class HomeWork2 {
 

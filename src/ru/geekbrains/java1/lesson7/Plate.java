@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson7;
+package ru.geekbrains.java1.lesson7;
 
 public class Plate {
     private int foodQuantity;
