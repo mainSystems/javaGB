@@ -53,7 +53,13 @@ public class Homework5 {
 
         threadCalculate1.start();
         threadCalculate2.start();
-        
+        try {
+            threadCalculate1.join();
+            threadCalculate2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         System.arraycopy(leftHalf, 0, mergedArray, 0, SIZE / 2);
         System.arraycopy(rightHalf, 0, mergedArray, SIZE / 2, SIZE / 2);
