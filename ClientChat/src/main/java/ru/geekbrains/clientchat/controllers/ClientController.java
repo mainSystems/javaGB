@@ -48,7 +48,6 @@ public class ClientController {
             System.err.println(ErrorMessage.ERROR_NETWORK_COMMUNICATION);
         }
 
-        chatTextArea.appendText(DateFormat.getDateInstance().format(new Date()) + ": ");
         messageTextArea.requestFocus();
         appendMessageToChat("Me", message);
 
@@ -75,10 +74,6 @@ public class ClientController {
                 appendMessageToChat("Server", message);
             }
         });
-    }
-
-    public ClientChat getApplication() {
-        return application;
     }
 
     public void setApplication(ClientChat application) {
