@@ -7,8 +7,9 @@ import java.net.Socket;
 import java.util.function.Consumer;
 
 public class Network {
+    private static Network INSTANCE;
 
-    protected static final String SERVER_ADDR = "localhost";
+    protected static final String SERVER_ADDR = "127.0.0.1";
     protected static final int SERVER_PORT = 8189;
     private Socket socket;
 
@@ -18,13 +19,20 @@ public class Network {
     private String host;
     private int port;
 
-    public Network(String host, int port) {
+    private Network(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public Network() {
+    private Network() {
         this(SERVER_ADDR, SERVER_PORT);
+    }
+
+    public static Network getINSTANCE() {
+        if (INSTANCE == null) {
+            INSTANCE = new Network();
+        }
+        return INSTANCE;
     }
 
     public boolean connect() {
@@ -34,7 +42,7 @@ public class Network {
             outputStream = new DataOutputStream(socket.getOutputStream());
             return true;
         } catch (IOException e) {
-            System.err.printf("Network module: %s: %s%n", ErrorMessage.Cant_Connect_to_server, SERVER_ADDR);
+            System.err.printf("Network module: %s: %s%n", ErrorMessage.CANT_CONNECT_TO_SERVER, SERVER_ADDR);
             e.printStackTrace();
             return false;
         }
@@ -44,7 +52,7 @@ public class Network {
         try {
             outputStream.writeUTF(message);
         } catch (IOException e) {
-            System.err.println(ErrorMessage.Cant_Send_Message_To_Server);
+            System.err.println(ErrorMessage.CANT_SEND_MESSAGE_TO_SERVER);
             e.printStackTrace();
             throw e;
         }
@@ -56,20 +64,22 @@ public class Network {
             public void run() {
                 try {
                     while (true) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
                         if (inputStream.readUTF().equalsIgnoreCase("/end")) {
+                            close();
                             break;
                         }
                         String message = inputStream.readUTF();
                         messageHandler.accept(message);
-//                        messageArea.append(inputStream.readUTF());
-//                        messageArea.appendText(System.lineSeparator());
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
-        thread.setDaemon(true);
+        //thread.setDaemon(true);
         thread.start();
     }
 
@@ -79,7 +89,7 @@ public class Network {
             outputStream.close();
             socket.close();
         } catch (IOException e) {
-            System.out.println(ErrorMessage.Cant_Close_Connect_to_server);
+            System.out.println(ErrorMessage.CANT_CLOSE_CONNECT_TO_SERVER);
             e.printStackTrace();
         }
     }

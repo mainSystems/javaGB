@@ -21,8 +21,10 @@ public class Server {
             echoReply(inputStream, outputStream);
 
         } catch (IOException e) {
-            System.err.printf("%s, PORT: %s", ErrorMessage.Cant_Connect_to_server ,SERVER_PORT);
+            System.err.printf("%s, PORT: %s", ErrorMessage.CANT_CONNECT_TO_SERVER ,SERVER_PORT);
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
@@ -42,6 +44,17 @@ public class Server {
             }
             outputStream.writeUTF(System.lineSeparator());
             outputStream.writeUTF("Echo: " + message);
+        }
+    }
+
+    public static void close() {
+        try {
+            inputStream.close();
+            outputStream.close();
+            socket.close();
+        } catch (IOException e) {
+            System.out.println(ErrorMessage.CANT_CLOSE_CONNECT_TO_SERVER);
+            e.printStackTrace();
         }
     }
 }
