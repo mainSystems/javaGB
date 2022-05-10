@@ -27,17 +27,17 @@ public class MyServer {
     }
 
     private void waitAndProcessClientConnection(ServerSocket serverSocket) throws IOException {
-            System.out.println("Waiting client connection...");
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected: " + clientSocket.toString());
+        System.out.println("Waiting client connection...");
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("Client connected: " + clientSocket.toString());
 
-            ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-            clientHandler.handle();
+        ClientHandler clientHandler = new ClientHandler(this, clientSocket);
+        clientHandler.handle();
     }
 
     protected void broadcastMessages(String message, ClientHandler sender) throws IOException {
         for (ClientHandler client : clients) {
-            if (client != sender){
+            if (client != sender) {
                 client.sendMessage(message);
             }
         }

@@ -10,8 +10,8 @@ public class ClientHandler {
     public static final String AUTH_OK_COMMAND = "/authOk";
     private MyServer server;
     private final Socket clientSocket;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
+    private DataInputStream inputSocket;
+    private DataOutputStream outputSocket;
 
     public ClientHandler(MyServer server, Socket clientSocket) {
         this.server = server;
@@ -19,8 +19,8 @@ public class ClientHandler {
     }
 
     public void handle() throws IOException {
-        inputStream = new DataInputStream(clientSocket.getInputStream());
-        outputStream = new DataOutputStream(clientSocket.getOutputStream());
+        inputSocket = new DataInputStream(clientSocket.getInputStream());
+        outputSocket = new DataOutputStream(clientSocket.getOutputStream());
 
         new Thread(() -> {
             try {
@@ -41,7 +41,7 @@ public class ClientHandler {
 
     private void authenticate() throws IOException {
         while (true) {
-            String message = inputStream.readUTF();
+            String message = inputSocket.readUTF();
             if (message.startsWith(AUTH_COMMAND)) {
                 String[] parts = message.split(" ");
                 String login = parts[1];
@@ -61,7 +61,7 @@ public class ClientHandler {
 
     private void readMessages() throws IOException {
         while (true) {
-            String message = inputStream.readUTF();
+            String message = inputSocket.readUTF();
             System.out.println("message = " + message);
             if (message.startsWith("/end")) {
                 return;
@@ -76,12 +76,12 @@ public class ClientHandler {
     }
 
     protected void sendMessage(String message) throws IOException {
-        this.outputStream.writeUTF(message);
+        this.outputSocket.writeUTF(message);
     }
 
     private void closeConnection() throws IOException {
-        inputStream.close();
-        outputStream.close();
+        inputSocket.close();
+        outputSocket.close();
         clientSocket.close();
         server.unsubscribe(this);
     }

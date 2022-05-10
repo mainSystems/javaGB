@@ -5,6 +5,8 @@ public enum ErrorMessage {
     CANT_CONNECT_TO_SERVER("Не возможно подключиться к серверу"),
     CANT_CLOSE_CONNECT_TO_SERVER("Соединение с сервером не закрыто"),
     ERROR_NETWORK_COMMUNICATION("Ошибка сети"),
+    FAILED_TO_GET_MESSAGE("Не удалось получить сообщение"),
+    FAILED_TO_BIND_PORT("Порт занят"),
     NO_SUCH_USER("Такого пользователя нет");
 
     private final String message;

@@ -37,18 +37,19 @@ public class AuthController {
             return;
         }
 
-        String authCommandMessage = String.format("%S %S %S", AUTH_COMMAND,login,password);
+        String authCommandMessage = String.format("%s %s %s", AUTH_COMMAND,login,password);
 
         try {
-            Network.getINSTANCE().sendMessage(authCommandMessage);
+            Network.getInstance().sendMessage(authCommandMessage);
         } catch (IOException e) {
             System.err.println(ErrorMessage.ERROR_NETWORK_COMMUNICATION);
         }
+
     }
 
 
     public void initMessageHandler() {
-        Network.getINSTANCE().waitMessage(new Consumer<String>() {
+        Network.getInstance().waitMessage(new Consumer<String>() {
             @Override
             public void accept(String message) {
                 if (message.startsWith(AUTH_OK_COMMAND)) {

@@ -31,23 +31,9 @@ public class ClientChat extends Application {
         connectToServer(controller);
 
         createAuthDialog(primaryStage);
+
         controller.initMessageHandler();
 
-    }
-
-    private void createAuthDialog(Stage primaryStage) throws IOException {
-        FXMLLoader authLoader = new FXMLLoader();
-        authLoader.setLocation(ClientChat.class.getResource("authDialog.fxml"));
-        AnchorPane authDialogPanel = authLoader.load();
-
-        authStage = new Stage();
-        authStage.initOwner(primaryStage);
-        authStage.initModality(Modality.WINDOW_MODAL);
-        authStage.setScene(new Scene(authDialogPanel));
-        AuthController authController = authLoader.getController();
-        authController.setClientChat(this);
-        authController.initMessageHandler();
-        authStage.showAndWait();
     }
 
     private ClientController createChatDialog(Stage primaryStage) throws IOException {
@@ -68,8 +54,23 @@ public class ClientChat extends Application {
         return controller;
     }
 
+    private void createAuthDialog(Stage primaryStage) throws IOException {
+        FXMLLoader authLoader = new FXMLLoader();
+        authLoader.setLocation(ClientChat.class.getResource("authDialog.fxml"));
+        AnchorPane authDialogPanel = authLoader.load();
+
+        authStage = new Stage();
+        authStage.initOwner(primaryStage);
+        authStage.initModality(Modality.WINDOW_MODAL);
+        authStage.setScene(new Scene(authDialogPanel));
+        AuthController authController = authLoader.getController();
+        authController.setClientChat(this);
+        authController.initMessageHandler();
+        authStage.showAndWait();
+    }
+
     private void connectToServer(ClientController clientController) {
-        boolean resultConnectToServer = Network.getINSTANCE().connect();
+        boolean resultConnectToServer = Network.getInstance().connect();
         if (!resultConnectToServer) {
             showErrorDialog(ErrorMessage.CANT_CONNECT_TO_SERVER);
             System.err.printf("%s: %s%n", ErrorMessage.CANT_CONNECT_TO_SERVER, SERVER_ADDR);
@@ -81,7 +82,7 @@ public class ClientChat extends Application {
         chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                Network.getINSTANCE().close();
+                Network.getInstance().close();
             }
         });
     }

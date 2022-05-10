@@ -30,18 +30,20 @@ public class ClientController {
     public void sendMessage() {
         String message = messageTextArea.getText();
 
-        if (!message.isEmpty()) {
+        if (message.isEmpty()) {
             messageTextArea.clear();
             return;
         }
 
         String sender = null;
         if (!userList.getSelectionModel().isEmpty()) {
-            sender = userList.getSelectionModel().getSelectedItems().toString();
+            sender = userList.getSelectionModel().getSelectedItem().toString();
+            System.out.println("message2: " + message);
+            System.out.println("User: " + sender);
         }
         try {
-            message = sender != null ? String.format(": ", sender, message) : message;
-            Network.getINSTANCE().sendMessage(message);
+            message = sender != null ? String.format("%s: %s", sender, message) : message;
+            Network.getInstance().sendMessage(message);
         } catch (IOException e) {
             System.err.println(ErrorMessage.ERROR_NETWORK_COMMUNICATION);
         }
@@ -67,7 +69,7 @@ public class ClientController {
     }
 
     public void initMessageHandler() {
-        Network.getINSTANCE().waitMessage(new Consumer<String>() {
+        Network.getInstance().waitMessage(new Consumer<String>() {
             @Override
             public void accept(String message) {
                 appendMessageToChat("Server", message);
