@@ -17,8 +17,11 @@ import java.util.function.Consumer;
 
 public class AuthController {
     private ClientChat clientChat;
+
     public static final String AUTH_COMMAND = "/auth";
     public static final String AUTH_OK_COMMAND = "/authOk";
+    public static final String AUTH_TIMER_START = "start";
+    public static final String AUTH_TIMER_STOP = "stop";
 
     @FXML
     public TextField loginField;
@@ -49,10 +52,12 @@ public class AuthController {
 
 
     public void initMessageHandler() {
+        clientChat.authTimer(AUTH_TIMER_START);
         Network.getInstance().waitMessage(new Consumer<String>() {
             @Override
             public void accept(String message) {
                 if (message.startsWith(AUTH_OK_COMMAND)) {
+                    clientChat.authTimer(AUTH_TIMER_STOP);
                     Thread.currentThread().interrupt();
 
                     Platform.runLater(new Runnable() {

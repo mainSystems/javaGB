@@ -20,7 +20,7 @@ public class MyServer {
                 waitAndProcessClientConnection(serverSocket);
             }
         } catch (IOException e) {
-            System.err.println("Failded to bind port: " + port);
+            System.err.println("Failed to bind port: " + port);
         }
 
 
