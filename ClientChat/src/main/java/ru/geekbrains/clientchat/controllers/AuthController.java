@@ -54,14 +54,12 @@ public class AuthController {
 
     public void initMessageHandler() {
         ClientChat.getInstance().authTimer(ClientChat.AUTH_TIMER_START);
-//        ClientChat.getInstance().authSchedule(ClientChat.AUTH_TIMER_START);
 
         readMessageListener = getNetwork().addReadMessageListener(new ReadMessageListener() {
             @Override
             public void processReceiveCommand(Command command) {
                 if (command.getType() == CommandType.AUTH_OK) {
                     ClientChat.getInstance().authTimer(ClientChat.AUTH_TIMER_STOP);
-//                    ClientChat.getInstance().authSchedule(ClientChat.AUTH_TIMER_STOP);
 
                     AuthOkCommandData data = (AuthOkCommandData) command.getData();
                     String username = data.getUserName();

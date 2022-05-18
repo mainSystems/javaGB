@@ -32,7 +32,6 @@ public class ClientChat extends Application {
     private FXMLLoader chatWindowLoader;
     private FXMLLoader authLoader;
 
-//    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
     public static void main(String[] args) {
         launch();
@@ -113,26 +112,6 @@ public class ClientChat extends Application {
         }
     }
 
-//    public void authSchedule(String command) {
-//        System.out.println("auth start: " + new Date());
-//
-//        switch (command) {
-//            case AUTH_TIMER_START:
-//                System.out.println("We are start");
-//                executor.schedule(() -> {
-//                    System.err.println("auth canceled: " + new Date());
-//                    Dialogs.AuthError.TIMEOUT.show();
-//                    System.err.println(Dialogs.AuthError.TIMEOUT + " /nclose connection");
-//                    authStage.close();
-//                    chatStage.close();
-//                }, AUTH_TIME, TimeUnit.SECONDS);
-//                break;
-//            case AUTH_TIMER_STOP:
-//                executor.shutdown();
-//                System.out.println("we are stopped");
-//                break;
-//        }
-//    }
 
     public void switchToMainChatWindow(String username) {
         getChatStage().setTitle(username);
