@@ -1,5 +1,6 @@
 package ru.geekbrains.server.chat;
 
+import ru.geekbrains.commands.Command;
 import ru.geekbrains.server.chat.auth.AuthService;
 
 import java.io.IOException;
@@ -22,8 +23,6 @@ public class MyServer {
         } catch (IOException e) {
             System.err.println("Failed to bind port: " + port);
         }
-
-
     }
 
     private void waitAndProcessClientConnection(ServerSocket serverSocket) throws IOException {
@@ -35,23 +34,41 @@ public class MyServer {
         clientHandler.handle();
     }
 
-    protected void broadcastMessages(String message, ClientHandler sender) throws IOException {
+    public synchronized boolean isUserNameBusy(String username) {
+        for (ClientHandler client : clients) {
+            if (client.getUsername().equals(username)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected synchronized void broadcastMessages(String message, ClientHandler sender) throws IOException {
         for (ClientHandler client : clients) {
             if (client != sender) {
-                client.sendMessage(message);
+                client.sendCommand(Command.clientMessageCommand(sender.getUsername(), message));
             }
         }
     }
 
-    protected void subscribe(ClientHandler clientHandler) {
+    protected synchronized void subscribe(ClientHandler clientHandler) {
         clients.add(clientHandler);
     }
 
-    protected void unsubscribe(ClientHandler clientHandler) {
+    protected synchronized void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
     }
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public synchronized void sendPrivateMessage(ClientHandler sender, String recipient, String privateMessage) throws IOException {
+        for (ClientHandler client : clients) {
+            if (client != sender && client.getUsername().equals(recipient)) {
+                client.sendCommand(Command.clientMessageCommand(sender.getUsername(), privateMessage));
+            }
+        }
     }
 }
