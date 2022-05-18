@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 
 public class ClientChat extends Application {
@@ -25,6 +23,7 @@ public class ClientChat extends Application {
     private static ClientChat INSTANCE;
 
     private final int AUTH_TIME = 10;
+    private static Timer timer;
     public static final String AUTH_TIMER_START = "start";
     public static final String AUTH_TIMER_STOP = "stop";
     private Stage chatStage;
@@ -33,7 +32,7 @@ public class ClientChat extends Application {
     private FXMLLoader chatWindowLoader;
     private FXMLLoader authLoader;
 
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+//    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
     public static void main(String[] args) {
         launch();
@@ -76,9 +75,14 @@ public class ClientChat extends Application {
 
     public void authTimer(String command) {
         System.out.println("auth start: " + new Date());
-        Timer timer = new Timer("auth timer");
-        TimerTask task = new TimerTask() {
+        if (timer != null) {
+            System.err.println("auth timer already set!! \"fixed with sweat and blood.\" ");
+            timer.cancel();
+        } else {
+            timer = new Timer("auth timer");
+        }
 
+        TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -87,8 +91,11 @@ public class ClientChat extends Application {
                         System.err.println("auth canceled: " + new Date());
                         Dialogs.AuthError.TIMEOUT.show();
                         System.err.println(Dialogs.AuthError.TIMEOUT + " /nclose connection");
-                        authStage.close();
-                        chatStage.close();
+                        getAuthController().close();
+                        getAuthStage().close();
+                        getChatStage().close();
+//                        authStage.close();
+//                        chatStage.close();
                     }
                 });
             }
@@ -106,26 +113,26 @@ public class ClientChat extends Application {
         }
     }
 
-    public void authSchedule(String command) {
-        System.out.println("auth start: " + new Date());
-
-        switch (command) {
-            case AUTH_TIMER_START:
-                System.out.println("We are start");
-                executor.schedule(() -> {
-                    System.err.println("auth canceled: " + new Date());
-                    Dialogs.AuthError.TIMEOUT.show();
-                    System.err.println(Dialogs.AuthError.TIMEOUT + " /nclose connection");
-                    authStage.close();
-                    chatStage.close();
-                }, AUTH_TIME, TimeUnit.SECONDS);
-                break;
-            case AUTH_TIMER_STOP:
-                executor.shutdown();
-                System.out.println("we are stopped");
-                break;
-        }
-    }
+//    public void authSchedule(String command) {
+//        System.out.println("auth start: " + new Date());
+//
+//        switch (command) {
+//            case AUTH_TIMER_START:
+//                System.out.println("We are start");
+//                executor.schedule(() -> {
+//                    System.err.println("auth canceled: " + new Date());
+//                    Dialogs.AuthError.TIMEOUT.show();
+//                    System.err.println(Dialogs.AuthError.TIMEOUT + " /nclose connection");
+//                    authStage.close();
+//                    chatStage.close();
+//                }, AUTH_TIME, TimeUnit.SECONDS);
+//                break;
+//            case AUTH_TIMER_STOP:
+//                executor.shutdown();
+//                System.out.println("we are stopped");
+//                break;
+//        }
+//    }
 
     public void switchToMainChatWindow(String username) {
         getChatStage().setTitle(username);
