@@ -1,18 +1,19 @@
 package ru.geekbrains.clientchat.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import ru.geekbrains.clientchat.ClientChat;
-import ru.geekbrains.clientchat.model.Network;
 import ru.geekbrains.clientchat.dialogs.Dialogs;
+import ru.geekbrains.clientchat.model.Network;
 import ru.geekbrains.clientchat.model.ReadMessageListener;
 import ru.geekbrains.commands.Command;
 import ru.geekbrains.commands.CommandType;
 import ru.geekbrains.commands.commands.ClientMessageCommandData;
+import ru.geekbrains.commands.commands.UpdateUserListCommandData;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -21,11 +22,11 @@ import java.util.List;
 
 public class ClientController {
 
-    private static final List<String> USERS_TEST_DATA = List.of(
-            "username1",
-            "username2",
-            "username3"
-    );
+//    private static final List<String> USERS_TEST_DATA = List.of(
+//            "username1",
+//            "username2",
+//            "username3"
+//    );
 
     @FXML
     public TextField messageTextArea;
@@ -36,12 +37,11 @@ public class ClientController {
     @FXML
     public ListView userList;
 
-    private ClientChat application;
 
-    @FXML
-    public void initialize() {
-        userList.setItems(FXCollections.observableArrayList(USERS_TEST_DATA));
-    }
+//    @FXML
+//    public void initialize() {
+//        userList.setItems(FXCollections.observableArrayList(USERS_TEST_DATA));
+//    }
 
     public void sendMessage() {
         String message = messageTextArea.getText();
@@ -90,12 +90,13 @@ public class ClientController {
                 if (command.getType() == CommandType.CLIENT_MESSAGE) {
                     ClientMessageCommandData data = (ClientMessageCommandData) command.getData();
                     appendMessageToChat(data.getSender(), data.getMessage());
+                } else if (command.getType() == CommandType.UPDATE_USERS_LIST) {
+                    UpdateUserListCommandData data = (UpdateUserListCommandData) command.getData();
+                    Platform.runLater(() -> {
+                        userList.setItems(FXCollections.observableArrayList(data.getUsers()));
+                    });
                 }
             }
         });
-    }
-
-    public void setApplication(ClientChat application) {
-        this.application = application;
     }
 }

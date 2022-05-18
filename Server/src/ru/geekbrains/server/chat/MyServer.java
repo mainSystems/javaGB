@@ -52,12 +52,14 @@ public class MyServer {
         }
     }
 
-    protected synchronized void subscribe(ClientHandler clientHandler) {
+    protected synchronized void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
+        notifyUserListUpdated();
     }
 
-    protected synchronized void unsubscribe(ClientHandler clientHandler) {
+    protected synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
+        notifyUserListUpdated();
     }
 
     public AuthService getAuthService() {
@@ -71,4 +73,16 @@ public class MyServer {
             }
         }
     }
+
+    private void notifyUserListUpdated() throws IOException {
+        List<String> users = new ArrayList<>();
+        for (ClientHandler client : clients) {
+            users.add(client.getUsername());
+        }
+
+        for (ClientHandler client : clients) {
+            client.sendCommand(Command.updateUserListCommand(users));
+        }
+    }
+
 }

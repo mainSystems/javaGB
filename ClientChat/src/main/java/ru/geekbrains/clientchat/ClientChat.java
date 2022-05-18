@@ -22,8 +22,9 @@ public class ClientChat extends Application {
 
     private static ClientChat INSTANCE;
 
-    private final int AUTH_TIME = 10;
+    private final int AUTH_TIME = 120;
     private static Timer timer;
+    private static TimerTask task;
     public static final String AUTH_TIMER_START = "start";
     public static final String AUTH_TIMER_STOP = "stop";
     private Stage chatStage;
@@ -81,24 +82,7 @@ public class ClientChat extends Application {
             timer = new Timer("auth timer");
         }
 
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.err.println("auth canceled: " + new Date());
-                        Dialogs.AuthError.TIMEOUT.show();
-                        System.err.println(Dialogs.AuthError.TIMEOUT + " /nclose connection");
-                        getAuthController().close();
-                        getAuthStage().close();
-                        getChatStage().close();
-//                        authStage.close();
-//                        chatStage.close();
-                    }
-                });
-            }
-        };
+        task = authTask();
 
         switch (command) {
             case AUTH_TIMER_START:
@@ -110,6 +94,27 @@ public class ClientChat extends Application {
                 System.out.println("we are stopped");
                 break;
         }
+    }
+
+    private TimerTask authTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.err.println("auth canceled: " + new Date());
+                        Dialogs.AuthError.TIMEOUT.show();
+                        System.err.printf("%s%n%s", Dialogs.AuthError.TIMEOUT,"close connection");
+                        getAuthController().close();
+                        getAuthStage().close();
+                        getChatStage().close();
+//                        authStage.close();
+//                        chatStage.close();
+                    }
+                });
+            }
+        };
     }
 
 

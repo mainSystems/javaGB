@@ -3,6 +3,7 @@ package ru.geekbrains.commands;
 import ru.geekbrains.commands.commands.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Command implements Serializable {
     private Object data;
@@ -12,6 +13,13 @@ public class Command implements Serializable {
         Command command = new Command();
         command.data = new AuthCommandData(login, password);
         command.type = CommandType.AUTH;
+        return command;
+    }
+
+    public static Command authTimerCommand(String controlTimer, int authTime){
+        Command command = new Command();
+        command.data = new authTimerCommandData(controlTimer, authTime);
+        command.type = CommandType.AUTH_TIMER;
         return command;
     }
 
@@ -50,12 +58,12 @@ public class Command implements Serializable {
         return command;
     }
 
-//    public static Command updateUserListCommand(List<String> users) {
-//        Command command = new Command();
-//        command.type = CommandType.UPDATE_USERS_LIST;
-//        command.data = new UpdateUserListCommandData(users);
-//        return command;
-//    }
+    public static Command updateUserListCommand(List<String> users) {
+        Command command = new Command();
+        command.type = CommandType.UPDATE_USERS_LIST;
+        command.data = new UpdateUserListCommandData(users);
+        return command;
+    }
 
     public Object getData() {
         return data;

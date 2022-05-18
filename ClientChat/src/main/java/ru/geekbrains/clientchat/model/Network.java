@@ -78,6 +78,10 @@ public class Network {
         return command;
     }
 
+    public void sendAuthTimerCommand(String controlTimer, int authTime) throws IOException {
+        sendCommand(Command.authTimerCommand(controlTimer, authTime));
+    }
+
     public void sendMessage(String message) throws IOException {
         sendCommand(Command.publicMessageCommand(message));
     }
